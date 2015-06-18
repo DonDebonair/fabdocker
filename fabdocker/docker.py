@@ -120,7 +120,8 @@ class Docker(object):
         )
         return self(cmd, local)
 
-    def run(self, image, tag=None, name=None, ports=None, volumes=None, volumes_from=None, env_vars=None, daemon=True, local=None):
+    def run(self, image, tag=None, name=None, ports=None, volumes=None, volumes_from=None, env_vars=None, daemon=True,
+            remove=False, interactive=False, tty=False, command="", local=None):
         if not volumes:
             volumes = {}
         if not volumes_from:
@@ -129,15 +130,19 @@ class Docker(object):
             env_vars = {}
         if not ports:
             ports = {}
-        cmd = "run {name} {daemon} {ports} {volumes} {volumes_from} {environment} {image}{version}".format(
+        cmd = "run {name} {daemon} {remove} {interactive} {tty} {ports} {volumes} {volumes_from} {environment} {image}{version} {command}".format(
             name="--name {}".format(name) if name else "",
             daemon="-d" if daemon else "",
+            remove="--rm" if remove else "",
+            interactive="-i" if interactive else "",
+            tty="-t" if tty else "",
             ports=" ".join(["-p {}{}".format("{}:".format(v) if v else "", k) for k, v in ports.iteritems()]),
             volumes=" ".join(["-v {}{}".format("{}:".format(v) if v else "", k) for k, v in volumes.iteritems()]),
             volumes_from=" ".join(["--volumes-from {}".format(v) for v in volumes_from]),
             environment=" ".join(["-e {}={}".format(k, v) for k, v in env_vars.iteritems()]),
             image=image,
-            version=":{}".format(tag) if tag else ""
+            version=":{}".format(tag) if tag else "",
+            command=command
         )
         return self(cmd, local)
 
