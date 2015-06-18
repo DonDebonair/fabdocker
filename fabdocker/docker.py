@@ -1,4 +1,4 @@
-from fabric.api import local as run_local, run, env, hide, show
+from fabric.api import local as run_local, run, env
 import json
 
 def _check_local(local_param, fabenv):
