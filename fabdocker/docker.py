@@ -17,7 +17,7 @@ class Docker(object):
     def __call__(self, cmd, local=None):
         docker_cmd = "docker {}".format(cmd)
         if _check_local(local, env):
-            return run_local(docker_cmd, capture=True)
+            return run_local(docker_cmd, capture=env.get("docker_local_capture", False))
         else:
             return run(docker_cmd)
 
@@ -56,10 +56,10 @@ class Docker(object):
 
     def create(self, image, name=None, volumes=None, local=None):
         if not volumes:
-            volumes = []
+            volumes = {}
         cmd = "create {name} {volumes} {image}".format(
             name="--name {}".format(name) if name else "",
-            volumes=" ".join(["-v {}".format(v) for v in volumes]),
+            volumes=" ".join(["-v {}{}".format("{}:".format(v) if v else "", k) for k, v in volumes.iteritems()]),
             image=image
         )
         return self(cmd, local)
@@ -120,7 +120,7 @@ class Docker(object):
         )
         return self(cmd, local)
 
-    def run(self, image, tag=None, name=None, ports=None, volumes=None, volumes_from=None, env_vars=None, daemon=True,
+    def run(self, image, tag=None, name=None, ports=None, volumes=None, volumes_from=None, env_vars=None, daemon=False,
             remove=False, interactive=False, tty=False, command="", local=None):
         if not volumes:
             volumes = {}
@@ -153,7 +153,7 @@ class Docker(object):
         )
         return self(cmd, local)
 
-    def replace(self, name, tag='latest', new_image=None, force=False, ports=None, volumes=None, volumes_from=None, env_vars=None, daemon=True, local=None):
+    def replace(self, name, tag='latest', new_image=None, force=False, ports=None, volumes=None, volumes_from=None, env_vars=None, daemon=False, local=None):
         containers = _filter_containers(self.ps(all=False, local=local), name=name)
         if len(containers) > 0:
             container_id = containers[0]['container_id']
