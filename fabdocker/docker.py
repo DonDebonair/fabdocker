@@ -141,7 +141,7 @@ class Docker(object):
             ports=" ".join(["-p {}{}".format("{}:".format(v) if v else "", k) for k, v in ports.iteritems()]),
             volumes=" ".join(["-v {}{}".format("{}:".format(v) if v else "", k) for k, v in volumes.iteritems()]),
             volumes_from=" ".join(["--volumes-from {}".format(v) for v in volumes_from]),
-            links=" ".join(["-v {}{}".format(k, ":{}".format(v) if v else "") for k, v in links.iteritems()]),
+            links=" ".join(["--link {}{}".format(k, ":{}".format(v) if v else "") for k, v in links.iteritems()]),
             environment=" ".join(["-e {}={}".format(k, v) for k, v in env_vars.iteritems()]),
             image=image,
             version=":{}".format(tag) if tag else "",
