@@ -120,17 +120,19 @@ class Docker(object):
         )
         return self(cmd, local)
 
-    def run(self, image, tag=None, name=None, ports=None, volumes=None, volumes_from=None, env_vars=None, daemon=False,
-            remove=False, interactive=False, tty=False, command="", local=None):
+    def run(self, image, tag=None, name=None, ports=None, volumes=None, volumes_from=None, links=None, env_vars=None,
+            daemon=False, remove=False, interactive=False, tty=False, command="", local=None):
         if not volumes:
             volumes = {}
+        if not links:
+            links = {}
         if not volumes_from:
             volumes_from = []
         if not env_vars:
             env_vars = {}
         if not ports:
             ports = {}
-        cmd = "run {name} {daemon} {remove} {interactive} {tty} {ports} {volumes} {volumes_from} {environment} {image}{version} {command}".format(
+        cmd = "run {name} {daemon} {remove} {interactive} {tty} {ports} {volumes} {volumes_from} {links} {environment} {image}{version} {command}".format(
             name="--name {}".format(name) if name else "",
             daemon="-d" if daemon else "",
             remove="--rm" if remove else "",
@@ -139,6 +141,7 @@ class Docker(object):
             ports=" ".join(["-p {}{}".format("{}:".format(v) if v else "", k) for k, v in ports.iteritems()]),
             volumes=" ".join(["-v {}{}".format("{}:".format(v) if v else "", k) for k, v in volumes.iteritems()]),
             volumes_from=" ".join(["--volumes-from {}".format(v) for v in volumes_from]),
+            links=" ".join(["-v {}{}".format(k, ":{}".format(v) if v else "") for k, v in links.iteritems()]),
             environment=" ".join(["-e {}={}".format(k, v) for k, v in env_vars.iteritems()]),
             image=image,
             version=":{}".format(tag) if tag else "",
