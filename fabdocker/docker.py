@@ -156,7 +156,8 @@ class Docker(object):
         )
         return self(cmd, local)
 
-    def replace(self, name, tag='latest', new_image=None, force=False, ports=None, volumes=None, volumes_from=None, env_vars=None, daemon=False, local=None):
+    def replace(self, name, tag='latest', new_image=None, force=False, ports=None, volumes=None, volumes_from=None,
+                links=None, env_vars=None, daemon=False, local=None):
         containers = _filter_containers(self.ps(all=False, local=local), name=name)
         if len(containers) > 0:
             container_id = containers[0]['container_id']
@@ -169,4 +170,5 @@ class Docker(object):
                 self.rm(container_id, local=local)
         else:
             image_name = new_image
-        return self.run(image_name, tag=tag, name=name, ports=ports, volumes=volumes, volumes_from=volumes_from, env_vars=env_vars, daemon=daemon, local=local)
+        return self.run(image_name, tag=tag, name=name, ports=ports, volumes=volumes, volumes_from=volumes_from,
+                        links=links, env_vars=env_vars, daemon=daemon, local=local)
