@@ -158,7 +158,7 @@ class Docker(object):
 
     def replace(self, name, tag='latest', new_image=None, force=False, ports=None, volumes=None, volumes_from=None,
                 links=None, env_vars=None, daemon=False, local=None):
-        containers = _filter_containers(self.ps(all=False, local=local), name=name)
+        containers = _filter_containers(self.ps(all=True, local=local), name=name)
         if len(containers) > 0:
             container_id = containers[0]['container_id']
             image_name = new_image or containers[0]['image'].keys()[0]
