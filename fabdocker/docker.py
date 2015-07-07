@@ -44,7 +44,7 @@ class Docker(object):
                 container[k] = line[v['start']:v['end']].strip()
             container['names'] = line[header.index("NAMES"):].strip().split(",")
             image_parts = line[header.index("IMAGE"):header.index("COMMAND")].strip().split(":")
-            container['image'] = {image_parts[0]: image_parts[1]}
+            container['image'] = {image_parts[0]: image_parts[1]} if len(image_parts) > 1 else {image_parts[0]: "latest"}
             containers.append(container)
         return containers
 
