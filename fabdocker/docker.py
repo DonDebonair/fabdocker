@@ -88,11 +88,14 @@ class Docker(object):
             target_tag=":{}".format(target_tag) if target_tag else ""
         )
         return self(cmd, local)
-
-    def build(self, image, directory, tag=None, local=None):
-        cmd = "build -t {image}{tag} {directory}".format(
+    
+    def build(self, image, directory, tag=None, build_arg=None, local=None):
+        if not build_arg:
+            build_arg = {}
+        cmd = "build -t {image}{tag} {build_arg} {directory}".format(
             image=image,
             tag=":{}".format(tag) if tag else "",
+            build_arg=" ".join(["--build-args {}={}".format(k, v) for k, v in build_arg.iteritems()]),
             directory=directory
         )
         return self(cmd, local)
