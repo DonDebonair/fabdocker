@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='fabdocker',
-    version='0.3.4',
+    version='0.3.5',
     url='https://github.com/DandyDev/fabdocker',
     license='MIT',
     author='Daan Debie',
