@@ -95,7 +95,7 @@ class Docker(object):
         cmd = "build -t {image}{tag} {build_arg} {directory}".format(
             image=image,
             tag=":{}".format(tag) if tag else "",
-            build_arg=" ".join(["--build-args {}={}".format(k, v) for k, v in build_arg.iteritems()]),
+            build_arg=" ".join(["--build-arg {}={}".format(k, v) for k, v in build_arg.iteritems()]),
             directory=directory
         )
         return self(cmd, local)
